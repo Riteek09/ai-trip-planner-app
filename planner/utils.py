@@ -3,12 +3,11 @@ import requests
 from google import genai
 
 
-# ================= GEMINI =================
 def generate_itinerary(destination: str, days: int, mood: str, group_type: str, budget: int) -> str:
     api_key = os.getenv('GEMINI_API_KEY')
 
     if not api_key:
-        return 'Gemini API key is missing. Add GEMINI_API_KEY in your .env file.'
+        return 'Gemini API key is missing. Add GEMINI_API_KEY in your environment variables.'
 
     client = genai.Client(api_key=api_key)
 
@@ -35,23 +34,19 @@ Instructions:
             model='gemini-2.5-flash',
             contents=prompt,
         )
-
-        text = getattr(response, 'text', None)
-        return text or 'No itinerary generated.'
+        return getattr(response, 'text', None) or 'No itinerary generated.'
 
     except Exception as exc:
         return f'Unable to generate itinerary: {exc}'
 
 
-# ================= WEATHER =================
 def get_weather(destination: str) -> str:
     api_key = os.getenv('WEATHER_API_KEY')
 
     if not api_key:
-        return 'Weather API key is missing. Add WEATHER_API_KEY in your .env file.'
+        return 'Weather API key is missing. Add WEATHER_API_KEY in your environment variables.'
 
     url = "https://api.openweathermap.org/data/2.5/weather"
-
     params = {
         "q": f"{destination},IN",
         "appid": api_key,
@@ -62,13 +57,9 @@ def get_weather(destination: str) -> str:
         response = requests.get(url, params=params, timeout=10)
         data = response.json()
 
-        print("Weather API Response:", data)  # DEBUG
-
-        # ❌ Error handling
         if response.status_code != 200:
             return f"Weather not available: {data.get('message', 'API error')}"
 
-        # ✅ Success
         temp = data["main"]["temp"]
         humidity = data["main"]["humidity"]
         description = data["weather"][0]["description"].title()
@@ -80,7 +71,6 @@ def get_weather(destination: str) -> str:
         return f"Weather error: {exc}"
 
 
-# ================= BUDGET =================
 def estimate_cost(days: int, budget: int, group_type: str) -> str:
     multiplier = {
         "solo": 1.0,
