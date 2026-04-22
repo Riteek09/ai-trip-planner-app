@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # AI Trip Planner using Google Gemini API
 
 An AI-powered trip planner built with Django. Users can register, log in, generate day-wise itineraries with Gemini, see live weather, estimate budgets, save trip history, and download trip plans as PDFs.
@@ -26,7 +26,7 @@ python -m venv venv
 
 ### Windows
 ```bash
-venv\Scriptsctivate
+venv\Scripts\activate
 ```
 
 ### Mac/Linux
@@ -86,7 +86,3 @@ ai_trip_planner/
 
 ## Current API note
 This project uses the newer `google-genai` Python SDK and a stable Gemini model string (`gemini-2.5-flash`). Google’s quickstart shows the GenAI SDK installation, and the model docs recommend stable model names such as `gemini-2.5-flash` for production-style use. citeturn805494view0turn569073view2
-=======
-# ai-trip-planner
-AI-powered Trip Planner built with Django, Google Gemini API, and OpenWeather API to generate personalized itineraries with weather insights, budget estimation, trip history, and PDF export.
->>>>>>> 4c11e26bc11aa0f490f177547c59bb7fbb0a2ea9
