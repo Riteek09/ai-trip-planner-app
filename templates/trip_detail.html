@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-sm border-0 content-reveal">
+    <div class="card-body p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+            <div>
+                <span class="badge badge-soft rounded-pill mb-2">Trip overview</span>
+                <h1 class="h3 mb-2">{{ trip.destination }}</h1>
+                <p class="text-muted mb-0">Created on {{ trip.created_at|date:'d M Y, h:i A' }}</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'download_trip_pdf' trip.id %}" class="btn btn-success">Download PDF</a>
+                <button type="button" class="btn btn-outline-secondary copy-itinerary" data-copy-target="#tripItinerary" data-bs-toggle="tooltip" title="Copy itinerary to clipboard">Copy</button>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6"><div class="detail-box"><strong>Days:</strong> {{ trip.days }}</div></div>
+            <div class="col-md-6"><div class="detail-box"><strong>Mood:</strong> {{ trip.get_mood_display }}</div></div>
+            <div class="col-md-6"><div class="detail-box"><strong>Group Type:</strong> {{ trip.get_group_type_display }}</div></div>
+            <div class="col-md-6"><div class="detail-box"><strong>Budget:</strong> INR {{ trip.budget }}</div></div>
+            <div class="col-md-6"><div class="detail-box"><strong>Weather:</strong> {{ trip.weather_info }}</div></div>
+            <div class="col-md-6"><div class="detail-box"><strong>Estimated Cost:</strong> {{ trip.estimated_cost }}</div></div>
+        </div>
+
+        <div class="mb-4">
+            <h2 class="h4 mb-3">Your itinerary</h2>
+            <p class="text-muted">Use this plan as a guide or customize it during your trip.</p>
+        </div>
+        <pre class="trip-pre mb-0" id="tripItinerary">{{ trip.itinerary }}</pre>
+    </div>
+</div>
+{% endblock %}

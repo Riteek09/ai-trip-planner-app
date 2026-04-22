@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero-section hero-banner mb-5 content-reveal">
+    <div class="container">
+        <div class="row align-items-center gx-5">
+            <div class="col-lg-6 hero-copy text-white">
+                <span class="hero-eyebrow text-uppercase mb-3">Build AI Trip Planner</span>
+                <h1 class="display-4 fw-bold mb-4">Plan your next vacation with smarter AI itineraries.</h1>
+                <p class="lead mb-4 text-white-75">Use AI-powered planning to create beautiful travel schedules, budget-aware routes, and custom experiences in seconds.</p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-5 text-dark">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5">Get Started</a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-5">Login</a>
+                    {% endif %}
+                </div>
+                <div class="hero-pill-list d-flex flex-wrap gap-3">
+                    <span class="hero-pill">AI-ready itineraries</span>
+                    <span class="hero-pill">Custom mood filters</span>
+                    <span class="hero-pill">Instant PDF export</span>
+                </div>
+            </div>
+            <div class="col-lg-6 hero-visual">
+                <div class="hero-image-card shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="Travel planning" />
+                    <div class="hero-image-decor hero-decor-top"></div>
+                    <div class="hero-image-decor hero-decor-bottom"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-5">
+    <div class="col-lg-4 content-reveal">
+        <div class="feature-card h-100">
+            <div class="feature-icon shadow-sm"><i class="bi bi-lightning-charge-fill fs-4"></i></div>
+            <h3 class="h5 mt-4">Instant itinerary creation</h3>
+            <p class="text-muted">Turn your destination, dates, and trip mood into a ready-to-use plan instantly.</p>
+        </div>
+    </div>
+    <div class="col-lg-4 content-reveal">
+        <div class="feature-card h-100">
+            <div class="feature-icon shadow-sm"><i class="bi bi-map-fill fs-4"></i></div>
+            <h3 class="h5 mt-4">Smart route suggestions</h3>
+            <p class="text-muted">Get optimized plans with weather-aware stops and local highlights.</p>
+        </div>
+    </div>
+    <div class="col-lg-4 content-reveal">
+        <div class="feature-card h-100">
+            <div class="feature-icon shadow-sm"><i class="bi bi-wallet2 fs-4"></i></div>
+            <h3 class="h5 mt-4">Travel budget control</h3>
+            <p class="text-muted">Plan with confidence using clear cost estimates for every itinerary.</p>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-5">
+    <div class="col-lg-4 content-reveal">
+        <div class="stat-card">
+            <h2>{{ latest_trips|length }}</h2>
+            <span>Recent plans generated</span>
+        </div>
+    </div>
+    <div class="col-lg-4 content-reveal">
+        <div class="stat-card">
+            <h2>{{ trips|length }}</h2>
+            <span>Saved trips in your account</span>
+        </div>
+    </div>
+    <div class="col-lg-4 content-reveal">
+        <div class="stat-card">
+            <h2>Fast</h2>
+            <span>Results ready in seconds</span>
+        </div>
+    </div>
+</section>
+
+<section class="content-reveal">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-column flex-md-row gap-3">
+        <div>
+            <h2 class="h3 mb-1">Recent trips</h2>
+            <p class="text-muted mb-0">Explore the latest AI-generated plans from your account.</p>
+        </div>
+        <span class="text-muted small">Live preview</span>
+    </div>
+    <div class="row g-4">
+        {% for trip in latest_trips %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title mb-1">{{ trip.destination }}</h5>
+                                <p class="text-muted small mb-0">{{ trip.get_mood_display }} • {{ trip.get_group_type_display }}</p>
+                            </div>
+                            <span class="badge bg-dark rounded-pill py-2">{{ trip.days }} day{{ trip.days|pluralize }}</span>
+                        </div>
+                        <p class="card-text text-truncate-5 mb-4">{{ trip.itinerary }}</p>
+                        <div class="mt-auto">
+                            <a href="{% url 'trip_detail' trip.id %}" class="stretched-link text-decoration-none">View full plan</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="card text-center">
+                    <div class="card-body py-5">
+                        <h3 class="h5">No trips yet</h3>
+                        <p class="text-muted mb-0">Login or register to start creating your first AI-generated travel plan.</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

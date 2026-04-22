@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="stat-card text-center p-4 content-reveal">
+                    <h2>{{ trips|length }}</h2>
+                    <span>Total saved trips</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card text-center p-4 content-reveal">
+                    <h2>Always</h2>
+                    <span>Ready for your next plan</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card text-center p-4 content-reveal">
+                    <h2>AI Ready</h2>
+                    <span>Instant itinerary creation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card dashboard-form-card sticky-lg-top content-reveal">
+            <div class="card-body">
+                <div class="mb-4">
+                    <span class="badge badge-soft rounded-pill mb-2">Travel lab</span>
+                    <h2 class="h4 fw-bold">Create a new trip</h2>
+                    <p class="text-muted mb-0">Answer a few quick details and get a full AI itinerary ready to use.</p>
+                </div>
+                <form method="post" id="tripForm">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-dark w-100" id="generateBtn">Generate AI Plan</button>
+                </form>
+                <p class="text-muted small mb-0 mt-3">Tip: Use real city names like Goa, Jaipur, Manali, Bali, or Dubai for better suggestions.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        {% if generated_trip %}
+            <div class="card mb-4 content-reveal">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                        <div>
+                            <span class="badge bg-success bg-opacity-15 text-success rounded-pill mb-2">Generated result</span>
+                            <h2 class="h4 mb-1">{{ generated_trip.destination }} plan</h2>
+                            <p class="text-muted mb-0">{{ generated_trip.days }} day{{ generated_trip.days|pluralize }} • {{ generated_trip.get_mood_display }} • {{ generated_trip.get_group_type_display }}</p>
+                        </div>
+                        <a href="{% url 'download_trip_pdf' generated_trip.id %}" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Download itinerary as PDF">Download PDF</a>
+                    </div>
+                    <div class="info-pill-wrap mb-4">
+                        <span class="info-pill">{{ generated_trip.weather_info }}</span>
+                        <span class="info-pill">{{ generated_trip.estimated_cost }}</span>
+                    </div>
+                    <pre class="trip-pre mb-3" id="dashboardItinerary">{{ generated_trip.itinerary }}</pre>
+                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+                        <button type="button" class="btn btn-outline-secondary btn-sm copy-itinerary" data-copy-target="#dashboardItinerary" data-bs-toggle="tooltip" title="Copy itinerary to clipboard">Copy itinerary</button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card content-reveal">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="h4 mb-1">Trip history</h2>
+                        <p class="text-muted mb-0">All plans are saved automatically so you can review them later.</p>
+                    </div>
+                    <span class="text-muted small">Latest trips</span>
+                </div>
+                {% for trip in trips %}
+                    <div class="history-item mb-3">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                            <div>
+                                <h3 class="h5 mb-1">{{ trip.destination }}</h3>
+                                <p class="text-muted mb-2">{{ trip.created_at|date:'d M Y, h:i A' }}</p>
+                                <p class="mb-0 small text-muted">{{ trip.days }} day{{ trip.days|pluralize }} • {{ trip.get_mood_display }} • {{ trip.get_group_type_display }} • Budget INR {{ trip.budget }}</p>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="{% url 'trip_detail' trip.id %}" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="View trip details">View</a>
+                                <a href="{% url 'download_trip_pdf' trip.id %}" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" title="Download this trip as PDF">PDF</a>
+                                <form method="post" action="{% url 'delete_trip' trip.id %}" class="m-0">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Delete this trip?');" data-bs-toggle="tooltip" title="Delete this trip">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="border rounded-4 p-4 text-center text-muted">
+                        No trips saved yet. Generate your first plan to begin.
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
